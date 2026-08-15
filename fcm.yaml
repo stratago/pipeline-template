@@ -20,7 +20,7 @@ agents:
   - id: letrista
     role: letrista
     kind: canonical
-    model: claude-opus-4-7
+    model: claude-opus-4-8
     temperature: 0.8
     prompt_file: agents/letrista.md
     inputs:  [ancora]
@@ -37,7 +37,7 @@ agents:
   - id: critico
     role: critico_anticliche
     kind: canonical
-    model: claude-opus-4-7
+    model: claude-opus-4-8
     prompt_file: agents/critico.md
     inputs:  [letra, ancora]
     outputs: [marcas_cliche]
