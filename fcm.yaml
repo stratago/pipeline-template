@@ -1,54 +1,99 @@
 spec_version: "1"
-
 pipeline:
-  name: "meu-pipeline"
-  description: "Descreva a hipótese que este pipeline testa."
-  author: "SEU_GITHUB_USERNAME"
-  license: "CC-BY-SA-4.0"
-  max_iterations: 3
-
+  name: Samba
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
 ancora:
-  territorio: "Ribeirão da Ilha, Florianópolis, SC"
-  declaracao: |
-    Substitua esta declaração pela sua âncora cultural real.
-    Fale de onde vem, o que é vivo hoje, o que está em risco de desaparecer.
-    Evite folclorização. Escreva como quem já morou ali.
-  lexico_obrigatorio: []
-  lexico_proibido: []
-
+  territorio: Sambaqui
+  declaracao: >-
+    Das aguas calmas um turbilhão de emoções , o samba aqui é o movimento que a mare traz no pé, o
+    samba leva alegria e esperança ao pescador que sai em busca de seu sustento
 agents:
-  - id: letrista
+  - id: letrista_5ecxj
     role: letrista
     kind: canonical
     model: claude-opus-4-8
-    temperature: 0.8
-    prompt_file: agents/letrista.md
-    inputs:  [ancora]
-    outputs: [letra]
-
-  - id: prosodista
+    temperature: 0.7
+    prompt_file: agents/letrista_5ecxj.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_qlbs9
     role: prosodista
     kind: canonical
-    model: claude-sonnet-5
-    prompt_file: agents/prosodista.md
-    inputs:  [letra]
-    outputs: [analise_prosodica]
-
-  - id: critico
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_qlbs9.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_fk71f
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_fk71f.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: timbrista_7xma5
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_7xma5.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: curador_cultural_w3iwy
+    role: curador_cultural
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/curador_cultural_w3iwy.md
+    inputs:
+      - ancora
+      - letra
+      - estrutura
+    outputs:
+      - veredito_cultural
+  - id: critico_anticliche_2jmq0
     role: critico_anticliche
     kind: canonical
     model: claude-opus-4-8
-    prompt_file: agents/critico.md
-    inputs:  [letra, ancora]
-    outputs: [marcas_cliche]
-
+    temperature: 0.7
+    prompt_file: agents/critico_anticliche_2jmq0.md
+    inputs:
+      - letra
+      - ancora
+    outputs:
+      - marcas_cliche
 topology:
-  entry: letrista
-  exit: [critico]
+  entry: letrista_5ecxj
+  exit: []
   edges:
-    - { from: letrista,   to: prosodista }
-    - { from: prosodista, to: critico }
-    - { from: critico,    to: letrista, kind: feedback, guard: "len(marcas_cliche) > 0" }
-
-field_audio_manifest: field_audio/manifest.json
-outputs_declared: [letra.md, analise_prosodica.md, plano_final.md]
+    - from: letrista_5ecxj
+      to: prosodista_qlbs9
+    - from: curador_cultural_w3iwy
+      to: prosodista_qlbs9
+    - from: prosodista_qlbs9
+      to: arranjador_fk71f
+    - from: curador_cultural_w3iwy
+      to: arranjador_fk71f
+    - from: curador_cultural_w3iwy
+      to: critico_anticliche_2jmq0
+    - from: arranjador_fk71f
+      to: timbrista_7xma5
+cert_domains:
+  - agentic_architecture
+  - claude_code_workflows
+  - tool_design_mcp
+  - prompt_engineering_structured_output
+  - context_management_reliability
