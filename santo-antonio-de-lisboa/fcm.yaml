@@ -1,0 +1,84 @@
+spec_version: "1"
+pipeline:
+  name: Santo Antônio de Lisboa
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 3
+ancora:
+  territorio: Santo Antônio de Lisboa
+  declaracao: |2-
+     Bairro onde a calçada da imperatriz fez fama, o santo casamenteiro sacramentou, da imperatriz a
+        praia e o sol, na pesca o sustento da família que com fé segue o caminho que a calçada iniciou.
+agents:
+  - id: letrista_fdgje
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_fdgje.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_yb74a
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_yb74a.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_jef69
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_jef69.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: timbrista_oy6mo
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_oy6mo.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: curador_cultural_bt1sy
+    role: curador_cultural
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/curador_cultural_bt1sy.md
+    inputs:
+      - ancora
+      - letra
+      - estrutura
+    outputs:
+      - veredito_cultural
+topology:
+  entry: letrista_fdgje
+  exit: []
+  edges:
+    - from: letrista_fdgje
+      to: prosodista_yb74a
+    - from: curador_cultural_bt1sy
+      to: prosodista_yb74a
+    - from: prosodista_yb74a
+      to: timbrista_oy6mo
+    - from: arranjador_jef69
+      to: timbrista_oy6mo
+cert_domains:
+  - tool_design_mcp
+  - prompt_engineering_structured_output
+  - agentic_architecture
+  - claude_code_workflows
+  - context_management_reliability
