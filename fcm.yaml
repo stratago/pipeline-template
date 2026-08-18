@@ -1,55 +1,65 @@
-
 spec_version: "1"
 pipeline:
-  name: "meu-pipeline"
-  description: "Descreva a hipótese que este pipeline testa."
-  author: "SEU_GITHUB_USERNAME"
-  license: "CC-BY-SA-4.0"
-  max_iterations: 3
+  name: Sambaqui
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
 ancora:
-  territorio: "Ribeirão da Ilha, Florianópolis, SC"
-  declaracao: |
-    Substitua esta declaração pela sua âncora cultural real.
-    Fale de onde vem, o que é vivo hoje, o que está em risco de desaparecer.
-    Evite folclorização. Escreva como quem já morou ali.
-  lexico_obrigatorio: []
-  lexico_proibido: []
+  territorio: Sambaqui
+  declaracao: >-
+    Bairro que leva no nome o samba, a ginga, o movimento entre compassos onde a alegria e tristeza
+    caminham juntos no ritmo dos pés no caminhar de um povo que vive o mar e sol fazendo da pesca o
+    seu alimento da alma e do corpo
 agents:
-  - id: letrista
+  - id: letrista_b9xj7
     role: letrista
     kind: canonical
     model: claude-opus-4-8
-    prompt_file: agents/letrista.md
-    inputs:  [ancora]
-    outputs: [letra]
-  - id: prosodista
+    temperature: 0.7
+    prompt_file: agents/letrista_b9xj7.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_e16pu
     role: prosodista
     kind: canonical
-    model: claude-sonnet-5
-    prompt_file: agents/prosodista.md
-    inputs:  [letra]
-    outputs: [analise_prosodica]
-  - id: critico
-    role: critico_anticliche
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_e16pu.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: timbrista_9zoh0
+    role: timbrista
     kind: canonical
     model: claude-opus-4-8
-    prompt_file: agents/critico.md
-    inputs:  [letra, ancora]
-    outputs: [marcas_cliche]
-  - id: arranjador_musical
+    temperature: 0.7
+    prompt_file: agents/timbrista_9zoh0.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: arranjador_yvwll
     role: arranjador
     kind: canonical
-    model: claude-sonnet-5
-    prompt_file: agents/arranjador_musical.md
-    inputs:  [letra, analise_prosodica, ancora]
-    outputs: [partitura]
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_yvwll.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
 topology:
-  entry: letrista
-  exit: [arranjador_musical]
+  entry: letrista_b9xj7
+  exit: []
   edges:
-    - { from: letrista,   to: prosodista }
-    - { from: prosodista, to: critico }
-    - { from: prosodista, to: arranjador_musical }
-    - { from: critico,    to: letrista, kind: feedback, guard: "len(marcas_cliche) > 0" }
-field_audio_manifest: field_audio/manifest.json
-outputs_declared: [letra.md, analise_prosodica.md, plano_final.md, partitura.json]
+    - from: letrista_b9xj7
+      to: prosodista_e16pu
+    - from: timbrista_9zoh0
+      to: arranjador_yvwll
+    - from: letrista_b9xj7
+      to: timbrista_9zoh0
