@@ -1,0 +1,59 @@
+spec_version: "1"
+pipeline:
+  name: sambaqui-samba
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
+ancora:
+  territorio: ""
+  declaracao: >-
+    Uma letra sobre Sambaqui como bairro onde o samba nasce do chão e guia os passos de quem chega —
+    misturando alegria e tristeza no mesmo compasso.
+agents:
+  - id: letrista_vnybc
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_vnybc.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_vtr5k
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_vtr5k.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_rsbiv
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_rsbiv.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+topology:
+  entry: letrista_vnybc
+  exit: []
+  edges:
+    - from: letrista_vnybc
+      to: prosodista_vtr5k
+    - from: letrista_vnybc
+      to: arranjador_rsbiv
+    - from: prosodista_vtr5k
+      to: arranjador_rsbiv
+cert_domains:
+  - agentic_architecture
+  - claude_code_workflows
+  - tool_design_mcp
+  - prompt_engineering_structured_output
+  - context_management_reliability
