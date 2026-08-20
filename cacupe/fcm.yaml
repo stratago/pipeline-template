@@ -1,0 +1,99 @@
+spec_version: "1"
+pipeline:
+  name: Cacupé
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
+ancora:
+  territorio: Cacupé
+  declaracao: >-
+    Bairro que tem no nome pe , cacu pe, andando descalço nas terras da vizinha Santo antonio de
+    lisboa , a calçada da imperatriz faz marca no pé a lembrança da terra batida onde o samba do
+    Sambaqui traz a ginga e movimento dos tres bairros vizinhos de passados entre alegrias e
+    tristeza frente ao mar de pescadores e sonhos da realeza 
+agents:
+  - id: letrista_beh35
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_beh35.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_5k3r9
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_5k3r9.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_l8s3l
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_l8s3l.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: timbrista_m2qbk
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_m2qbk.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: curador_cultural_hrbdm
+    role: curador_cultural
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/curador_cultural_hrbdm.md
+    inputs:
+      - ancora
+      - letra
+      - estrutura
+    outputs:
+      - veredito_cultural
+  - id: critico_anticliche_f1s68
+    role: critico_anticliche
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/critico_anticliche_f1s68.md
+    inputs:
+      - letra
+      - ancora
+    outputs:
+      - marcas_cliche
+topology:
+  entry: letrista_beh35
+  exit: []
+  edges:
+    - from: letrista_beh35
+      to: prosodista_5k3r9
+    - from: prosodista_5k3r9
+      to: arranjador_l8s3l
+    - from: prosodista_5k3r9
+      to: timbrista_m2qbk
+    - from: arranjador_l8s3l
+      to: timbrista_m2qbk
+    - from: letrista_beh35
+      to: curador_cultural_hrbdm
+    - from: letrista_beh35
+      to: critico_anticliche_f1s68
+    - from: timbrista_m2qbk
+      to: curador_cultural_hrbdm
+    - from: curador_cultural_hrbdm
+      to: critico_anticliche_f1s68
