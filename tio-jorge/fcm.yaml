@@ -1,0 +1,89 @@
+spec_version: "1"
+pipeline:
+  name: Tio Jorge
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
+ancora:
+  territorio: Tio, poeta e apicultor
+  declaracao: |-
+    Todos os caminhos que andei ..
+        Encontrei  pedras e também flores..
+        Estendi minha mãos para amparar , os mais carentes.
+        Ofereci meu apoio, mesmo a  alguns que não merecia...
+        Nunca fiz alguma coisa, esperando algo em troca.
+        Quando busco e não encontro, não choro..nem imploro ..
+        Se volto com as mais vazias... Peço a Deus que te abençoe.
+        Assim fico com o coração cheio.
+        Sempre faça o bem, ele sempre vence
+         O mau...sempre volta em dobro.
+        Quando você acende uma vela , você enxerga o caminho 
+        E encontra a Paz.
+        E realiza seus sonhos
+agents:
+  - id: letrista_l374u
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_l374u.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_2tubg
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_2tubg.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: timbrista_yvftm
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_yvftm.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: arranjador_seicm
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_seicm.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: curador_cultural_hvzxh
+    role: curador_cultural
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/curador_cultural_hvzxh.md
+    inputs:
+      - ancora
+      - letra
+      - estrutura
+    outputs:
+      - veredito_cultural
+topology:
+  entry: letrista_l374u
+  exit: []
+  edges:
+    - from: letrista_l374u
+      to: prosodista_2tubg
+    - from: prosodista_2tubg
+      to: timbrista_yvftm
+    - from: timbrista_yvftm
+      to: arranjador_seicm
+    - from: arranjador_seicm
+      to: curador_cultural_hvzxh
