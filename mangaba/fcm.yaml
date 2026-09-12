@@ -1,0 +1,126 @@
+spec_version: "1"
+pipeline:
+  name: Mangaba
+  author: stratago
+  license: CC-BY-SA-4.0
+  max_iterations: 5
+ancora:
+  territorio: Nordeste
+  declaracao: |-
+    No Nordeste a gente não diz
+    que chegou só pra olhar.
+    Quando chega, chega junto,
+    chega pronto pra somar.
+    E a Mangaba chega chegando,
+    com vontade de transformar.
+
+    Chega ao Porto Digital,
+    no Manguebit vem pulsar,
+    chega junto com o NERD
+    pra construir e inovar.
+    De Pe/Se/Al pro Nordeste,
+    do Nordeste pra inspirar.
+
+    Queremos nossos próprios dados,
+    nossa inteligência criar,
+    com tecnologia soberana,
+    sem depender pra avançar.
+    IA que resolve problema,
+    que dá retorno ao trabalhar.
+
+    Porque o Nordeste não nasceu
+    pra somente acompanhar.
+    Tem ciência, tem talento,
+    tem coragem de inventar.
+    Se o futuro é Inteligência,
+    a gente veio protagonizar.
+
+    Mangaba chega chegando,
+    com raiz e inovação.
+    Do Nordeste para o Brasil,
+    com propósito e visão.
+
+    E se perguntarem de onde
+    vem essa transformação:
+    vem da força do Nordeste,
+    vem da nossa própria mão!
+agents:
+  - id: letrista_8s4jy
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_8s4jy.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_gf0m2
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_gf0m2.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_u7vej
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_u7vej.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: timbrista_nv3ip
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_nv3ip.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+  - id: curador_cultural_ooc5p
+    role: curador_cultural
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/curador_cultural_ooc5p.md
+    inputs:
+      - ancora
+      - letra
+      - estrutura
+    outputs:
+      - veredito_cultural
+  - id: critico_anticliche_pk6og
+    role: critico_anticliche
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/critico_anticliche_pk6og.md
+    inputs:
+      - letra
+      - ancora
+    outputs:
+      - marcas_cliche
+topology:
+  entry: letrista_8s4jy
+  exit: []
+  edges:
+    - from: letrista_8s4jy
+      to: prosodista_gf0m2
+    - from: prosodista_gf0m2
+      to: timbrista_nv3ip
+    - from: timbrista_nv3ip
+      to: arranjador_u7vej
+    - from: arranjador_u7vej
+      to: curador_cultural_ooc5p
+    - from: curador_cultural_ooc5p
+      to: critico_anticliche_pk6og
