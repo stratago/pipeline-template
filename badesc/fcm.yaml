@@ -1,0 +1,62 @@
+spec_version: "1"
+pipeline:
+  name: badesc
+  author: badesc
+  license: CC-BY-SA-4.0
+  max_iterations: 5
+ancora:
+  territorio: centro
+  declaracao: badesc espaco de arte cultura
+agents:
+  - id: letrista_p1mx6
+    role: letrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/letrista_p1mx6.md
+    inputs:
+      - ancora
+    outputs:
+      - letra
+  - id: prosodista_upubh
+    role: prosodista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/prosodista_upubh.md
+    inputs:
+      - letra
+    outputs:
+      - analise_prosodica
+  - id: arranjador_zwb3t
+    role: arranjador
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/arranjador_zwb3t.md
+    inputs:
+      - letra
+      - analise_prosodica
+    outputs:
+      - estrutura
+  - id: timbrista_uty9y
+    role: timbrista
+    kind: canonical
+    model: claude-opus-4-8
+    temperature: 0.7
+    prompt_file: agents/timbrista_uty9y.md
+    inputs:
+      - estrutura
+      - manifesto_audio
+    outputs:
+      - plano_timbre
+topology:
+  entry: letrista_p1mx6
+  exit: []
+  edges:
+    - from: letrista_p1mx6
+      to: prosodista_upubh
+    - from: prosodista_upubh
+      to: timbrista_uty9y
+    - from: timbrista_uty9y
+      to: arranjador_zwb3t
